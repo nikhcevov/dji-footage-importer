@@ -1,0 +1,37 @@
+# Maintainer: boss
+# Local package: run `makepkg -si` from this directory (or `yay -Bi .`).
+# Builds from the repository checked out one level up via $startdir.
+pkgname=dji-footage-importer
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Import DJI camera recordings and prepare them for DaVinci Resolve"
+arch=('any')
+url="https://example.invalid/dji-footage-importer"
+license=('MIT')
+depends=('python' 'pyside6' 'ffmpeg')
+options=(!strip)
+source=()
+sha256sums=()
+
+package() {
+  local root="$startdir/.."
+
+  install -d "$pkgdir/usr/lib/$pkgname" \
+             "$pkgdir/usr/bin" \
+             "$pkgdir/usr/share/applications"
+
+  cp -r "$root/src/dji_importer" "$pkgdir/usr/lib/$pkgname/"
+  find "$pkgdir/usr/lib/$pkgname" -type d -name '__pycache__' -prune -exec rm -rf {} +
+
+  cat > "$pkgdir/usr/bin/$pkgname" <<'EOF'
+#!/usr/bin/env bash
+export PYTHONPATH="/usr/lib/dji-footage-importer${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m dji_importer "$@"
+EOF
+  chmod 755 "$pkgdir/usr/bin/$pkgname"
+
+  sed 's|@EXEC@|/usr/bin/dji-footage-importer|g' \
+    "$root/resources/dji-importer.desktop" \
+    > "$pkgdir/usr/share/applications/import-from-dji.desktop"
+  chmod 644 "$pkgdir/usr/share/applications/import-from-dji.desktop"
+}
