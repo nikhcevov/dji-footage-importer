@@ -214,9 +214,9 @@ class Importer:
             conversion.verify_output(stage_mov, info)
 
             _emit(progress_cb, idx, total, src.name, "saving", None)
-            _, foot_dir = self.store.date_dirs(date)
-            foot_dir.mkdir(parents=True, exist_ok=True)
-            final_mov = storage.unique_dest_path(foot_dir, mov_name)
+            _, prepared_dir = self.store.date_dirs(date)
+            prepared_dir.mkdir(parents=True, exist_ok=True)
+            final_mov = storage.unique_dest_path(prepared_dir, mov_name)
             storage.atomic_publish(stage_mov, final_mov)
 
             # Stage D - commit
@@ -268,8 +268,8 @@ class Importer:
             try:
                 info = media.probe(orig)
                 date = rec["capture_date"] or media.resolve_capture_date(info, datetime.now())
-                _, foot_dir = self.store.date_dirs(date)
-                foot_dir.mkdir(parents=True, exist_ok=True)
+                _, prepared_dir = self.store.date_dirs(date)
+                prepared_dir.mkdir(parents=True, exist_ok=True)
                 mov_name = Path(rec["source_filename"]).stem + ".mov"
                 stage_mov = self.store.staging / f"{mov_name}.{os.getpid()}.repair.part"
                 cmd = conversion.build_ffmpeg_command(
@@ -281,7 +281,7 @@ class Importer:
 
                 conversion.run_ffmpeg(cmd, cancel_event, on_pct, info.duration, logger)
                 conversion.verify_output(stage_mov, info)
-                final_mov = storage.unique_dest_path(foot_dir, mov_name)
+                final_mov = storage.unique_dest_path(prepared_dir, mov_name)
                 storage.atomic_publish(stage_mov, final_mov)
                 self.db.set_prepared_path(rec["id"], final_mov)
                 result.succeeded += 1

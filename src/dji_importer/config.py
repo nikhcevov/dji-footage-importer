@@ -51,12 +51,14 @@ def videos_dir() -> Path:
     return _home() / "Videos"
 
 
+def library_root() -> Path:
+    """Root for imported media libraries, one subdirectory per source."""
+    return videos_dir() / "Library"
+
+
 def dest_root() -> Path:
-    return videos_dir() / "DJI"
-
-
-def footage_dir() -> Path:
-    return dest_root() / "footage"
+    """This importer's library root: <Videos>/Library/DJI."""
+    return library_root() / "DJI"
 
 
 def original_dir() -> Path:

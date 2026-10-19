@@ -51,15 +51,15 @@ echo "Removed the DJI Footage Importer application files."
 
 echo
 echo "Your footage and import records were NOT deleted."
-echo "Location: $VIDEOS_DIR/DJI"
+echo "Location: $VIDEOS_DIR/Library/DJI"
 
 if [ "$PURGE" -eq 1 ]; then
   echo
   echo "WARNING: --purge permanently deletes ALL imported originals and prepared files."
   read -r -p "Type DELETE to continue: " answer
   if [ "$answer" = "DELETE" ]; then
-    rm -rf "$VIDEOS_DIR/DJI"
-    echo "Deleted $VIDEOS_DIR/DJI"
+    rm -rf "$VIDEOS_DIR/Library/DJI"
+    echo "Deleted $VIDEOS_DIR/Library/DJI"
   else
     echo "Purge cancelled; nothing else was deleted."
   fi

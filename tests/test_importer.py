@@ -40,7 +40,7 @@ def test_repeat_import_creates_no_duplicates(importer, make_clip, tmp_path):
 
     assert len(importer.db.complete_records()) == 1
     assert len(list(importer.store.original.rglob("*.MP4"))) == 1
-    assert len(list(importer.store.footage.rglob("*.mov"))) == 1
+    assert len(list(importer.store.root.rglob("*.mov"))) == 1
 
 
 def test_only_new_files_are_imported(importer, make_clip, tmp_path):
@@ -108,7 +108,7 @@ def test_identical_filenames_remain_distinct(importer, make_clip, tmp_path):
     assert result.succeeded == 2
 
     originals = list((importer.store.original / "2026-09-25").iterdir())
-    prepared = list((importer.store.footage / "2026-09-25").iterdir())
+    prepared = list((importer.store.root / "2026-09-25").iterdir())
     assert len(originals) == 2 and len(prepared) == 2
     assert len({p.name for p in originals}) == 2
     assert len(importer.db.complete_records()) == 2
@@ -192,7 +192,7 @@ def test_recovers_from_failed_conversion(importer, make_clip, tmp_path, monkeypa
     first = importer.run([f])
     assert first.failed == 1
     assert len(list(importer.store.original.rglob("*.MP4"))) == 1
-    assert not list(importer.store.footage.rglob("*.mov"))
+    assert not list(importer.store.root.rglob("*.mov"))
 
     monkeypatch.setattr(conversion, "run_ffmpeg", real)
     second = importer.run([f])
@@ -228,5 +228,17 @@ def test_capture_date_directory(importer, make_clip, tmp_path):
     f = make_clip(tmp_path / "src", name="DJI_20260925170036_0438_D.MP4",
                   duration=0.4)
     importer.run([f])
-    assert (importer.store.footage / "2026-09-25").is_dir()
+    assert (importer.store.root / "2026-09-25").is_dir()
     assert (importer.store.original / "2026-09-25").is_dir()
+
+
+def test_layout_has_no_footage_directory(importer, make_clip, tmp_path):
+    f = make_clip(tmp_path / "src", name="DJI_20260925170036_0438_D.MP4",
+                  duration=0.4)
+    importer.run([f])
+    assert (importer.store.root / "2026-09-25"
+            / "DJI_20260925170036_0438_D.mov").is_file()
+    assert (importer.store.original / "2026-09-25"
+            / "DJI_20260925170036_0438_D.MP4").is_file()
+    assert (importer.store.importer / "state.sqlite").is_file()
+    assert not (importer.store.root / "footage").exists()

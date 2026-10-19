@@ -68,3 +68,17 @@ def test_import_lock_is_exclusive(tmp_path):
     first.release()
     assert second.acquire() is True
     second.release()
+
+
+def test_destination_root_is_library_dji(xdg):
+    from dji_importer import config
+    assert config.dest_root() == xdg / "Videos" / "Library" / "DJI"
+    assert config.original_dir() == config.dest_root() / ".original"
+    assert config.importer_dir() == config.dest_root() / ".importer"
+
+
+def test_storage_creates_no_footage_directory(xdg):
+    store = storage.Storage(0)
+    store.ensure_dirs()
+    assert (store.root / ".importer" / "staging").is_dir()
+    assert not (store.root / "footage").exists()

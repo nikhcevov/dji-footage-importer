@@ -59,18 +59,18 @@ class Storage:
     def __init__(self, min_free_space_gib: int = config.DEFAULT_MIN_FREE_SPACE_GIB):
         self.min_free_space_gib = min_free_space_gib
         self.root = config.dest_root()
-        self.footage = config.footage_dir()
         self.original = config.original_dir()
         self.importer = config.importer_dir()
         self.staging = config.staging_dir()
         self.db_path = config.state_db_path()
 
     def ensure_dirs(self) -> None:
-        for d in (self.footage, self.original, self.importer, self.staging):
+        for d in (self.root, self.original, self.importer, self.staging):
             d.mkdir(parents=True, exist_ok=True)
 
     def date_dirs(self, date: str) -> tuple[Path, Path]:
-        return self.original / date, self.footage / date
+        """Return (original dir, prepared-media dir) for a capture date."""
+        return self.original / date, self.root / date
 
     def free_bytes(self) -> int:
         return shutil.disk_usage(self.root).free

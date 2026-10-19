@@ -212,35 +212,39 @@ Resolve the actual Videos directory via XDG user directories rather than assumin
 
 Default root:
 
-`~/Videos/DJI/`
+`~/Videos/Library/DJI/`
 
 Required structure:
 
 ```text
 Videos/
-└── DJI/
-    ├── footage/
-    │   ├── 2026-10-19/
-    │   │   ├── DJI_0001.mov
-    │   │   └── DJI_0002.mov
-    │   └── 2026-10-20/
-    │       └── DJI_0003.mov
-    │
-    ├── .original/
-    │   ├── 2026-10-19/
-    │   │   ├── DJI_0001.MP4
-    │   │   └── DJI_0002.MP4
-    │   └── 2026-10-20/
-    │       └── DJI_0003.MP4
-    │
-    └── .importer/
-        ├── state.sqlite
-        └── staging/
+└── Library/
+    └── DJI/
+        ├── 2026-10-19/
+        │   ├── DJI_0001.mov
+        │   └── DJI_0002.mov
+        ├── 2026-10-20/
+        │   └── DJI_0003.mov
+        │
+        ├── .original/
+        │   ├── 2026-10-19/
+        │   │   ├── DJI_0001.MP4
+        │   │   └── DJI_0002.MP4
+        │   └── 2026-10-20/
+        │       └── DJI_0003.MP4
+        │
+        └── .importer/
+            ├── state.sqlite
+            └── staging/
 ```
+
+Prepared media lives directly in the dated directory; there is no `footage/`
+subdirectory. Other source importers use `<Videos>/Library/<source>/` with the
+same structure and their own `.importer/` state.
 
 ### Directory responsibilities
 
-**footage/**
+**Dated directories (`YYYY-MM-DD/`)**
 
 Only editing-ready media should appear here.
 
@@ -693,7 +697,7 @@ The MVP is considered ready when:
 - Import starts using one button.
 - UI remains responsive and shows meaningful progress.
 - All originals are preserved in `.original/`.
-- Editing-ready MOV files appear in `footage/`.
+- Editing-ready MOV files appear directly in dated directories under `Library/DJI/`.
 - The original compressed video streams are not re-encoded.
 - Unsupported AAC audio is converted to PCM.
 - A real prepared recording plays with picture and sound inside DaVinci.

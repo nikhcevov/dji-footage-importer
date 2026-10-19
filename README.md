@@ -61,7 +61,7 @@ sudo pacman -Rns dji-footage-importer  # also remove unused dependencies
 ```
 
 Footage, originals, the SQLite state and logs live in the user's home
-(`<Videos>/DJI`, `~/.local/state/dji-footage-importer`). They are created by the
+(`<Videos>/Library/DJI`, `~/.local/state/dji-footage-importer`). They are created by the
 application at runtime, are **not** owned by the package, and are never touched
 by `pacman -R`. Use `-R` rather than `-Rns` if you want to keep dependencies
 such as `pyside6` installed.
@@ -72,14 +72,19 @@ desktop shortcut.
 ## Destination layout
 
 ```
-<Videos>/DJI/
-├── footage/YYYY-MM-DD/    editing-ready .mov files (import these in Resolve)
+<Videos>/Library/DJI/
+├── YYYY-MM-DD/            editing-ready .mov files (import these in Resolve)
 ├── .original/YYYY-MM-DD/  unmodified camera .mp4 files
 └── .importer/             state.sqlite, staging/
 ```
 
 The Videos directory is resolved through XDG user directories, not assumed to be
-`~/Videos`.
+`~/Videos`. There is no `footage/` subdirectory: prepared media lives directly
+in the dated directory.
+
+Each source gets its own root under `<Videos>/Library/<source>/` with the same
+internal structure. Future importers must keep their own `.importer/state.sqlite`
+and implementation; state is never shared between sources.
 
 ## How it works
 

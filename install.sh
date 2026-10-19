@@ -82,9 +82,9 @@ fi
 
 # 4. Destination directories -------------------------------------------------
 VIDEOS_DIR="$(PYTHONPATH="$PREFIX/lib" python3 -c 'from dji_importer import config; print(config.videos_dir())')"
-info "Preparing destination $VIDEOS_DIR/DJI"
-mkdir -p "$VIDEOS_DIR/DJI/footage" "$VIDEOS_DIR/DJI/.original" \
-  "$VIDEOS_DIR/DJI/.importer/staging"
+info "Preparing destination $VIDEOS_DIR/Library/DJI"
+mkdir -p "$VIDEOS_DIR/Library/DJI" "$VIDEOS_DIR/Library/DJI/.original" \
+  "$VIDEOS_DIR/Library/DJI/.importer/staging"
 
 info "Installed. Launch 'Import from DJI' from the menu or desktop shortcut."
 info "CLI: $LAUNCHER scan|import|verify|repair"
