@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Import from DJI
+Comment=Import recordings for DaVinci Resolve
+Exec=@EXEC@
+Icon=camera-video
+Terminal=false
+Categories=AudioVideo;
+StartupNotify=true
